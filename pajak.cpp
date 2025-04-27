@@ -16,16 +16,18 @@ data user[1000];
 void print_cantik(string header);
 bool cek_nik(int nik_baru);
 bool daftar_pass(string pass_baru, int pjg_char);
+bool login(int nik, string pass);
 int id_terdaftar=0;
 
 int main()
 {
     
-    int pilih_menu, nik_baru, pjg_char;
-    string pass_baru;
+    int pilih_menu, nik_baru, pjg_char, auth_nik;
+    string pass_baru, auth_pass, auth_pass2;
     bool menu_awal = 1, kondisi_pass = 0;
     char yakin;
     do{
+        system("cls");
         print_cantik("Sistem Digital Perpajakan Negeri Indo");
         cout << "Menu Awal:\n1. Registrasi\n2. Login\n0. Keluar Sistem" << endl;
         cout << "Pilih Menu: ";
@@ -53,6 +55,7 @@ int main()
                     pjg_char = pass_baru.length();
                     kondisi_pass = daftar_pass(pass_baru, pjg_char);
                     if(kondisi_pass){
+                        user[id_terdaftar].pass = pass_baru;
                         cout << endl << "Registrasi Berhasil." << endl;
                     }else{
                         cout << endl << "Password tidak sesuai ketentuan." << endl;
@@ -61,7 +64,6 @@ int main()
                         system("cls");
                     }
                 }while(!kondisi_pass);
-                kondisi_pass = 0; // mengembalikan nilai kondisi pwd ke false
             } else{
                 cout << "NIK Sudah Terdaftar" << endl;
             }
@@ -70,6 +72,20 @@ int main()
         
         case 2:
             print_cantik("Login Akun");
+            cout << "Masukkan NIK: "; cin >> auth_nik;
+            cout << "Masukkan Password: "; cin >> auth_pass;
+            cout << "Konfirmasi Password: "; cin >> auth_pass2;
+            if (auth_pass == auth_pass2)
+            {
+                if(login(auth_nik, auth_pass)){
+                    cout << endl << "Login Berhasil." << endl;
+                }else{
+                    cout << endl << "NIK/Password Salah. Login Gagal!" << endl;
+                }
+            }else{
+                cout << endl << "Konfirmasi Password Tidak Sesuai!" << endl;
+            }
+            system("pause");
             break;
         
         case 0:
@@ -126,4 +142,15 @@ bool daftar_pass(string pass_baru, int pjg_char){
         else simbol = 1;
     }
     return (angka == 1 && upper == 1 && lower == 1 && simbol == 1 && pjg_char >= 8) ? 1 : 0;
+};
+
+bool login(int nik, string pass){
+    for (int i = 0; i <= id_terdaftar; i++)
+    {
+        if (nik == user[i].nik)
+        {
+            (pass == user[i].pass) ? 1 : 0;
+        }
+    } 
+    return 0;
 };
