@@ -16,8 +16,8 @@ data user[1000];
 void print_cantik(string header);
 void buat_pass(int id);
 bool cek_nik_terdaftar(int nik_baru);
-bool daftar_pass(string pass_baru, int pjg_char);
-bool login(int nik, string pass);
+bool cek_ketentuan_pass(string pass_baru, int pjg_char);
+bool cek_berhasil_login_atau_tidak(int nik, string pass);
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
 int nik_masuk_id_berapa(int nik);
 int id_terdaftar=0;
@@ -25,7 +25,7 @@ int id_terdaftar=0;
 int main()
 {
     
-    int pilih_menu, nik_baru, pjg_char, auth_nik;
+    int pilih_menu, nik_baru, pjg_char, auth_nik, id;
     string pass_baru, auth_pass, auth_pass2, auth_tgl;
     bool menu_awal = 1, kondisi_pass = 0;
     char yakin;
@@ -59,13 +59,13 @@ int main()
             break;
         
         case 2:
-            print_cantik("Login Akun");
+            print_cantik("Login");
             cout << "Masukkan NIK: "; cin >> auth_nik;
             cout << "Masukkan Password: "; cin >> auth_pass;
             cout << "Konfirmasi Password: "; cin >> auth_pass2;
             if (auth_pass == auth_pass2)
             {
-                if(login(auth_nik, auth_pass)){
+                if(cek_berhasil_login_atau_tidak(auth_nik, auth_pass)){
                     cout << endl << "Login Berhasil." << endl;
                 }else{
                     cout << endl << "NIK/Password Salah. Login Gagal!" << endl;
@@ -80,12 +80,13 @@ int main()
             print_cantik("Lupa Password");
             cout << "Masukkan NIK: "; cin >> auth_nik;
             cout << "Masukkan Tanggal Lahir (dd-mm-yyyy): "; cin >> auth_tgl;
-            if (nik_masuk_id_berapa(auth_nik) == -1)
+            id = nik_masuk_id_berapa(auth_nik);
+            if (id == -1)
             {
                 cout << "NIK tidak ditemukan" << endl;
             }else{
                 if(cek_kesesuaian_nik_dan_tglLhr(auth_nik, auth_tgl)){
-                    buat_pass(nik_masuk_id_berapa(auth_nik));
+                    buat_pass(id);
                 }else{
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
                 }
@@ -132,7 +133,7 @@ void buat_pass(int id){
         cin.ignore();
         getline(cin, pass_baru);
         pjg_char = pass_baru.length();
-        kondisi_pass = daftar_pass(pass_baru, pjg_char);
+        kondisi_pass = cek_ketentuan_pass(pass_baru, pjg_char);
         if(kondisi_pass){
             user[id].pass = pass_baru;
             cout << endl << "Registrasi Berhasil." << endl;
@@ -158,7 +159,7 @@ bool cek_nik_terdaftar(int nik_baru){
     return ans;
 };
 
-bool daftar_pass(string pass_baru, int pjg_char){
+bool cek_ketentuan_pass(string pass_baru, int pjg_char){
     bool upper = 0, lower = 0, angka = 0, simbol = 0;
     char huruf;
     for (int i = 0; i < pjg_char; i++)
@@ -172,15 +173,13 @@ bool daftar_pass(string pass_baru, int pjg_char){
     return (angka == 1 && upper == 1 && lower == 1 && simbol == 1 && pjg_char >= 8) ? 1 : 0;
 };
 
-bool login(int nik, string pass){
-    int id = -1;
-    id = nik_masuk_id_berapa(nik);
+bool cek_berhasil_login_atau_tidak(int nik, string pass){
+    int id = nik_masuk_id_berapa(nik);
     return (pass == user[id].pass) ? 1 : 0;
 };
 
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr){
-    int id = -1;
-    id = nik_masuk_id_berapa(nik);
+    int id = nik_masuk_id_berapa(nik);
     if (id == -1)
     {
         return 0;
