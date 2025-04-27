@@ -18,8 +18,8 @@ void buat_pass(int id);
 bool cek_nik_terdaftar(int nik_baru);
 bool daftar_pass(string pass_baru, int pjg_char);
 bool login(int nik, string pass);
-bool lupa_pass(int nik, string tgl_lhr);
-int cek_nik(int nik);
+bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
+int nik_masuk_id_berapa(int nik);
 int id_terdaftar=0;
 
 int main()
@@ -80,12 +80,12 @@ int main()
             print_cantik("Lupa Password");
             cout << "Masukkan NIK: "; cin >> auth_nik;
             cout << "Masukkan Tanggal Lahir (dd-mm-yyyy): "; cin >> auth_tgl;
-            if (cek_nik(auth_nik) == -1)
+            if (nik_masuk_id_berapa(auth_nik) == -1)
             {
                 cout << "NIK tidak ditemukan" << endl;
             }else{
-                if(lupa_pass(auth_nik, auth_tgl)){
-                    buat_pass(cek_nik(auth_nik));
+                if(cek_kesesuaian_nik_dan_tglLhr(auth_nik, auth_tgl)){
+                    buat_pass(nik_masuk_id_berapa(auth_nik));
                 }else{
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
                 }
@@ -174,13 +174,13 @@ bool daftar_pass(string pass_baru, int pjg_char){
 
 bool login(int nik, string pass){
     int id = -1;
-    id = cek_nik(nik);
+    id = nik_masuk_id_berapa(nik);
     return (pass == user[id].pass) ? 1 : 0;
 };
 
-bool lupa_pass(int nik, string tgl_lhr){
+bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr){
     int id = -1;
-    id = cek_nik(nik);
+    id = nik_masuk_id_berapa(nik);
     if (id == -1)
     {
         return 0;
@@ -189,7 +189,7 @@ bool lupa_pass(int nik, string tgl_lhr){
     }
 };
 
-int cek_nik(int nik){
+int nik_masuk_id_berapa(int nik){
     int ans = -1;
     for (int i = 0; i <= id_terdaftar; i++)
     {
