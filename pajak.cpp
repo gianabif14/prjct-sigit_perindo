@@ -23,7 +23,7 @@ int main()
     
     int pilih_menu, nik_baru, pjg_char;
     string pass_baru;
-    bool menu_awal = 1;
+    bool menu_awal = 1, kondisi_pass = 0;
     char yakin;
     do{
         print_cantik("Sistem Digital Perpajakan Negeri Indo");
@@ -38,22 +38,30 @@ int main()
             cin >> nik_baru;
             if (cek_nik(nik_baru) == 1){
                 user[id_terdaftar].nik = nik_baru;
-                cout << "Nama Lengkap: "; cin >> user[id_terdaftar].nama;
+                cin.ignore();
+                cout << "Nama Lengkap: "; getline(cin, user[id_terdaftar].nama);
                 cout << "Tanggal Lahir (dd-mm-yyyy): "; cin >> user[id_terdaftar].tgl_lahir;
                 cout << "Profesi: "; cin >> user[id_terdaftar].profesi;
                 cout << "Status Perkawinan (Y/T): "; cin >> user[id_terdaftar].status;
                 system("pause");
                 system("cls");
-                cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka" << endl << endl;
-                cout << "Password Baru: ";
-                cin >> pass_baru;
-                pjg_char = pass_baru.length();
-                if((daftar_pass(pass_baru, pjg_char)==1) && pjg_char >= 8){
-                    cout << "Registrasi Berhasil." << endl;
-                }else{
-                    cout << "Password tidak sesuai ketentuan." << endl;
-                    user[id_terdaftar].nik = -1;
-                }
+                do{
+                    cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka\n5. Mengandung minimal 1 Simbol" << endl << endl;
+                    cout << "Password Baru: ";
+                    cin.ignore();
+                    getline(cin, pass_baru);
+                    pjg_char = pass_baru.length();
+                    kondisi_pass = daftar_pass(pass_baru, pjg_char);
+                    if(kondisi_pass){
+                        cout << endl << "Registrasi Berhasil." << endl;
+                    }else{
+                        cout << endl << "Password tidak sesuai ketentuan." << endl;
+                        cout << "Silahkan Buat Ulang Password." << endl;
+                        system("pause");
+                        system("cls");
+                    }
+                }while(!kondisi_pass);
+                kondisi_pass = 0; // mengembalikan nilai kondisi pwd ke false
             } else{
                 cout << "NIK Sudah Terdaftar" << endl;
             }
@@ -117,5 +125,5 @@ bool daftar_pass(string pass_baru, int pjg_char){
         else if(huruf >= 97 && huruf <= 122) lower = 1;
         else simbol = 1;
     }
-    return (angka == 1 && upper == 1 && lower == 1 && simbol == 1) ? 1 : 0;
+    return (angka == 1 && upper == 1 && lower == 1 && simbol == 1 && pjg_char >= 8) ? 1 : 0;
 };
