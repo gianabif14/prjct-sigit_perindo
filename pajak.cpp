@@ -7,20 +7,28 @@ typedef struct
     string nama;
     string tgl_lahir;
     string profesi;
-    string status;
+    char status;
     string pass;
 } pengguna;
 
 pengguna user[1000];
 
 void print_cantik(string header);
+void ubah_format_tglLhr(string *tglLahir);
 void buat_pass(int id);
+void kata_kata();
+void main_menu();
+void pph();
+void pbb();
+void kendaraan();
+void identitas();
+int nik_masuk_id_berapa(int nik);
+int id_terdaftar=0;
+int id_sedang_login = -1;
 bool cek_nik_terdaftar(int nik_baru);
 bool cek_ketentuan_pass(string pass_baru, int pjg_char);
 bool cek_berhasil_login_atau_tidak(int nik, string pass);
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
-int nik_masuk_id_berapa(int nik);
-int id_terdaftar=0;
 
 //sementara untuk integrasi cmd linux
 void cls(){
@@ -28,8 +36,8 @@ void cls(){
 }
 void pause(){
     cout << "Press any key to continue...";
-    char a = getchar();
-    (void)a;
+    cin.ignore();
+    cin.get();
 }
 
 int main()
@@ -40,7 +48,6 @@ int main()
     bool menu_awal = 1;
     char yakin;
     do{
-        cls();
         print_cantik("Sistem Digital Perpajakan Negeri Indo");
         cout << "Menu Awal:\n1. Registrasi\n2. Login\n3. Lupa Password\n0. Keluar Sistem" << endl;
         cout << "Pilih Menu: ";
@@ -51,12 +58,15 @@ int main()
             print_cantik("Registrasi Akun");
             cout << "Masukkan NIK: ";
             cin >> nik_baru;
-            if (cek_nik_terdaftar(nik_baru) == 1){
+            cin.ignore();
+            if (cek_nik_terdaftar(nik_baru)){
                 user[id_terdaftar].nik = nik_baru;
-                cin.ignore();
                 cout << "Nama Lengkap: "; getline(cin, user[id_terdaftar].nama);
                 cout << "Tanggal Lahir (dd-mm-yyyy): "; cin >> user[id_terdaftar].tgl_lahir;
-                cout << "Profesi: "; cin >> user[id_terdaftar].profesi;
+                ubah_format_tglLhr(&user[id_terdaftar].tgl_lahir);
+                cout << "Profesi: ";
+                cin.ignore();
+                getline(cin, user[id_terdaftar].profesi);
                 cout << "Status Perkawinan (Y/T): "; cin >> user[id_terdaftar].status;
                 pause();
                 cls();
@@ -77,6 +87,9 @@ int main()
             {
                 if(cek_berhasil_login_atau_tidak(auth_nik, auth_pass)){
                     cout << endl << "Login Berhasil." << endl;
+                    id_sedang_login = nik_masuk_id_berapa(auth_nik);
+                    pause();
+                    main_menu();
                 }else{
                     cout << endl << "NIK/Password Salah. Login Gagal!" << endl;
                 }
@@ -96,6 +109,7 @@ int main()
                 cout << "NIK tidak ditemukan" << endl;
             }else{
                 if(cek_kesesuaian_nik_dan_tglLhr(auth_nik, auth_tgl)){
+                    cin.ignore();
                     buat_pass(id);
                 }else{
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
@@ -117,12 +131,7 @@ int main()
             break;
         }
     } while(menu_awal);
-    cls();
-    cout << "Terimakasih sudah rajin dalam membayar pajak." << endl;
-    cout << "++==========================================++" << endl;
-    cout << "|| PAJAK DIGUNAKAN UNTUK KEPENTINGAN RAKYAT ||" << endl;
-    cout << "|| BUKAN UNTUK MEMPERKAYA DIRI PARA PEJABAT ||" << endl;
-    cout << "++==========================================++" << endl;
+    kata_kata();
 }
 
 void print_cantik(string header){
@@ -140,7 +149,97 @@ void print_cantik(string header){
     cout << endl;
 };
 
+void main_menu(){
+    int pilih_menu;
+    char yakin='n';
+    do{
+        cls();
+        print_cantik("Menu Utama");
+        cout << endl << "1. Bayar pajak Penghasilan\n2. Bayar pajak PBB\n3. Bayar pajak Kendaraan\n4. Identitas Pribadi\n0. Keluar Sistem (Log Out)" << endl;
+        cout << "Pilih Menu: ";
+        cin >> pilih_menu;
+        switch (pilih_menu)
+        {
+        case 1:
+            pph();
+            break;
+
+        case 2:
+            pbb();
+            break;
+
+        case 3:
+            kendaraan();
+            break;
+
+        case 4:
+            identitas();
+            break;
+
+        case 0:
+            print_cantik("Keluar Sistem");
+            cout << "Apakah anda yakin akan logout dari sistem (Y/N): ";
+            cin >> yakin;
+            break;
+        
+        default:
+            print_cantik("Menu Tidak Valid.");
+            break;
+        }
+        if (pilih_menu != 0) pause();
+    }while(yakin != 'Y' && yakin != 'y');
+};
+
+void pph(){
+    print_cantik("Menu Pajak Penghasilan");
+};
+
+void pbb(){
+    print_cantik("Menu Pajak Bumi dan Bangunan");
+};
+
+void kendaraan(){
+    print_cantik("Menu Pajak Kendaraan");
+};
+
+void identitas(){
+    print_cantik("Identitas Pribadi");
+    cout << "Nama Lengkap     : " << user[id_sedang_login].nama << endl;
+    cout << "Tanggal Lahir    : " << user[id_sedang_login].tgl_lahir << endl;
+    cout << "Profesi          : " << user[id_sedang_login].profesi << endl;
+    cout << "Status Perkawinan: ";
+    (user[id_sedang_login].status == 'Y') ? cout << "Kawin\n" : cout << "Belum Kawin\n";
+};
+
+void ubah_format_tglLhr(string *tglLahir){
+    // dd-mm-yyyy
+    // 0123456789
+    string x, y, z;
+    int yInt;
+
+    x = tglLahir->substr(0, 2);          // tanggal
+    yInt = stoi(tglLahir->substr(3, 2)); // bulan
+
+    if (yInt == 1) y = "Januari";
+    else if (yInt == 2) y = "Februari";
+    else if (yInt == 3) y = "Maret";
+    else if (yInt == 4) y = "April";
+    else if (yInt == 5) y = "Mei";
+    else if (yInt == 6) y = "Juni";
+    else if (yInt == 7) y = "Juli";
+    else if (yInt == 8) y = "Agustus";
+    else if (yInt == 9) y = "September";
+    else if (yInt == 10) y = "Oktober";
+    else if (yInt == 11) y = "November";
+    else if (yInt == 12) y = "Desember";
+    else y = "Bulan Tidak Valid";
+
+    z = tglLahir->substr(6, 4); // tahun
+    *tglLahir = x + ' ' + y + ' ' + z;
+};
+
 void buat_pass(int id){
+    cin.ignore();
     string pass_baru;
     int pjg_char;
     bool kondisi_pass = 0;
@@ -160,7 +259,7 @@ void buat_pass(int id){
             cls();
         }
     }while(!kondisi_pass);
-}
+};
 
 bool cek_nik_terdaftar(int nik_baru){
     bool ans = 1;
@@ -191,7 +290,8 @@ bool cek_ketentuan_pass(string pass_baru, int pjg_char){
 
 bool cek_berhasil_login_atau_tidak(int nik, string pass){
     int id = nik_masuk_id_berapa(nik);
-    return (pass == user[id].pass) ? 1 : 0;
+    if (id == -1) return 0;
+    return (pass == user[id].pass);
 };
 
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr){
@@ -199,14 +299,14 @@ bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr){
     if (id == -1)
     {
         return 0;
-    }else{
-        return (tgl_lhr == user[id].tgl_lahir) ? 1 : 0;
     }
-};
+    ubah_format_tglLhr(&tgl_lhr);
+    return (tgl_lhr == user[id].tgl_lahir);
+}
 
 int nik_masuk_id_berapa(int nik){
     int ans = -1;
-    for (int i = 0; i <= id_terdaftar; i++)
+    for (int i = 0; i < id_terdaftar; i++)
     {
         if (nik == user[i].nik)
         {
@@ -215,4 +315,13 @@ int nik_masuk_id_berapa(int nik){
         }
     } 
     return ans;
-}
+};
+
+void kata_kata(){
+    cls();
+    cout << "Terimakasih sudah rajin dalam membayar pajak." << endl;
+    cout << "++==========================================++" << endl;
+    cout << "|| PAJAK DIGUNAKAN UNTUK KEPENTINGAN RAKYAT ||" << endl;
+    cout << "|| BUKAN UNTUK MEMPERKAYA DIRI PARA PEJABAT ||" << endl;
+    cout << "++==========================================++" << endl;
+};
