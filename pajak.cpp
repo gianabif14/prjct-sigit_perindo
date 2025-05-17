@@ -9,9 +9,9 @@ typedef struct
     string profesi;
     string status;
     string pass;
-} data;
+} pengguna;
 
-data user[1000];
+pengguna user[1000];
 
 void print_cantik(string header);
 void buat_pass(int id);
@@ -22,15 +22,25 @@ bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
 int nik_masuk_id_berapa(int nik);
 int id_terdaftar=0;
 
+//sementara untuk integrasi cmd linux
+void cls(){
+    system("clear");
+}
+void pause(){
+    cout << "Press any key to continue...";
+    char a = getchar();
+    (void)a;
+}
+
 int main()
 {
     
-    int pilih_menu, nik_baru, pjg_char, auth_nik, id;
+    int pilih_menu, nik_baru, auth_nik, id;
     string pass_baru, auth_pass, auth_pass2, auth_tgl;
-    bool menu_awal = 1, kondisi_pass = 0;
+    bool menu_awal = 1;
     char yakin;
     do{
-        system("cls");
+        cls();
         print_cantik("Sistem Digital Perpajakan Negeri Indo");
         cout << "Menu Awal:\n1. Registrasi\n2. Login\n3. Lupa Password\n0. Keluar Sistem" << endl;
         cout << "Pilih Menu: ";
@@ -48,14 +58,14 @@ int main()
                 cout << "Tanggal Lahir (dd-mm-yyyy): "; cin >> user[id_terdaftar].tgl_lahir;
                 cout << "Profesi: "; cin >> user[id_terdaftar].profesi;
                 cout << "Status Perkawinan (Y/T): "; cin >> user[id_terdaftar].status;
-                system("pause");
-                system("cls");
+                pause();
+                cls();
                 buat_pass(id_terdaftar);
                 id_terdaftar++;
             } else{
                 cout << "NIK Sudah Terdaftar" << endl;
             }
-            system("pause");
+            pause();
             break;
         
         case 2:
@@ -73,7 +83,7 @@ int main()
             }else{
                 cout << endl << "Konfirmasi Password Tidak Sesuai!" << endl;
             }
-            system("pause");
+            pause();
             break;
 
         case 3:
@@ -91,7 +101,7 @@ int main()
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
                 }
             }
-            system("pause");
+            pause();
             break;
         
         case 0:
@@ -103,20 +113,27 @@ int main()
         
         default:
             print_cantik("Input Salah");
-            system("pause");
+            pause();
             break;
         }
     } while(menu_awal);
+    cls();
+    cout << "Terimakasih sudah rajin dalam membayar pajak." << endl;
+    cout << "++==========================================++" << endl;
+    cout << "|| PAJAK DIGUNAKAN UNTUK KEPENTINGAN RAKYAT ||" << endl;
+    cout << "|| BUKAN UNTUK MEMPERKAYA DIRI PARA PEJABAT ||" << endl;
+    cout << "++==========================================++" << endl;
 }
 
 void print_cantik(string header){
-    system("cls");
-    for (int i = 0; i < header.size()+4; i++)
+    int pjg_char= header.size()+4;
+    cls();
+    for (int i = 0; i < pjg_char; i++)
     {
         cout << '=';
     }
     cout << endl << "  " << header << endl;
-    for (int i = 0; i < header.size()+4; i++)
+    for (int i = 0; i < pjg_char; i++)
     {
         cout << '=';
     }
@@ -130,25 +147,24 @@ void buat_pass(int id){
     do{
         cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka\n5. Mengandung minimal 1 Simbol" << endl << endl;
         cout << "Password Baru: ";
-        cin.ignore();
         getline(cin, pass_baru);
         pjg_char = pass_baru.length();
         kondisi_pass = cek_ketentuan_pass(pass_baru, pjg_char);
-        if(kondisi_pass){
+        if(kondisi_pass == true){
             user[id].pass = pass_baru;
             cout << endl << "Registrasi Berhasil." << endl;
         }else{
             cout << endl << "Password tidak sesuai ketentuan." << endl;
             cout << "Silahkan Buat Ulang Password." << endl;
-            system("pause");
-            system("cls");
+            pause();
+            cls();
         }
     }while(!kondisi_pass);
 }
 
 bool cek_nik_terdaftar(int nik_baru){
     bool ans = 1;
-    for (int i = 0; i <= id_terdaftar; i++)
+    for (int i = 0; i < id_terdaftar; i++)
     {
         if (nik_baru == user[i].nik)
         {
@@ -165,9 +181,9 @@ bool cek_ketentuan_pass(string pass_baru, int pjg_char){
     for (int i = 0; i < pjg_char; i++)
     {
         huruf = pass_baru[i];
-        if (huruf >= 48 && huruf <= 57) angka = 1;
-        else if(huruf >= 65 && huruf <= 90) upper = 1;
-        else if(huruf >= 97 && huruf <= 122) lower = 1;
+        if (huruf >= '0' && huruf <= '9') angka = 1;
+        else if(huruf >= 'A' && huruf <= 'Z') upper = 1;
+        else if(huruf >= 'a' && huruf <= 'z') lower = 1;
         else simbol = 1;
     }
     return (angka == 1 && upper == 1 && lower == 1 && simbol == 1 && pjg_char >= 8) ? 1 : 0;
