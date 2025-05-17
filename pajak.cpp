@@ -5,6 +5,7 @@ typedef struct
 {
     int nik;
     string nama;
+    string tgl_lahir_asli;
     string tgl_lahir;
     string profesi;
     char status;
@@ -14,7 +15,7 @@ typedef struct
 pengguna user[1000];
 
 void print_cantik(string header);
-void ubah_format_tglLhr(string *tglLahir);
+void ubah_format_tglLhr(string tgl_lhr_asli, string *tgl_lhr);
 void buat_pass(int id);
 void kata_kata();
 void main_menu();
@@ -25,7 +26,7 @@ void identitas();
 int nik_masuk_id_berapa(int nik);
 int id_terdaftar=0;
 int id_sedang_login = -1;
-bool cek_nik_terdaftar(int nik_baru);
+bool cek_nik_sudah_dipakai(int nik_baru);
 bool cek_ketentuan_pass(string pass_baru, int pjg_char);
 bool cek_berhasil_login_atau_tidak(int nik, string pass);
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
@@ -58,14 +59,13 @@ int main()
             print_cantik("Registrasi Akun");
             cout << "Masukkan NIK: ";
             cin >> nik_baru;
-            cin.ignore();
-            if (cek_nik_terdaftar(nik_baru)){
+            if (cek_nik_sudah_dipakai(nik_baru)){
                 user[id_terdaftar].nik = nik_baru;
-                cout << "Nama Lengkap: "; getline(cin, user[id_terdaftar].nama);
-                cout << "Tanggal Lahir (dd-mm-yyyy): "; cin >> user[id_terdaftar].tgl_lahir;
-                ubah_format_tglLhr(&user[id_terdaftar].tgl_lahir);
-                cout << "Profesi: ";
                 cin.ignore();
+                cout << "Nama Lengkap: "; getline(cin, user[id_terdaftar].nama);
+                cout << "Tanggal Lahir (dd-mm-yyyy): "; getline(cin, user[id_terdaftar].tgl_lahir_asli);
+                ubah_format_tglLhr(user[id_terdaftar].tgl_lahir_asli, &user[id_terdaftar].tgl_lahir);
+                cout << "Profesi: ";
                 getline(cin, user[id_terdaftar].profesi);
                 cout << "Status Perkawinan (Y/T): "; cin >> user[id_terdaftar].status;
                 pause();
@@ -82,21 +82,15 @@ int main()
             print_cantik("Login");
             cout << "Masukkan NIK: "; cin >> auth_nik;
             cout << "Masukkan Password: "; cin >> auth_pass;
-            cout << "Konfirmasi Password: "; cin >> auth_pass2;
-            if (auth_pass == auth_pass2)
-            {
-                if(cek_berhasil_login_atau_tidak(auth_nik, auth_pass)){
-                    cout << endl << "Login Berhasil." << endl;
-                    id_sedang_login = nik_masuk_id_berapa(auth_nik);
-                    pause();
-                    main_menu();
-                }else{
-                    cout << endl << "NIK/Password Salah. Login Gagal!" << endl;
-                }
+            if(cek_berhasil_login_atau_tidak(auth_nik, auth_pass)){
+                cout << endl << "Login Berhasil." << endl;
+                id_sedang_login = nik_masuk_id_berapa(auth_nik);
+                pause();
+                main_menu();
             }else{
-                cout << endl << "Konfirmasi Password Tidak Sesuai!" << endl;
+                cout << endl << "NIK/Password Salah. Login Gagal!" << endl;
+                pause();
             }
-            pause();
             break;
 
         case 3:
@@ -109,7 +103,6 @@ int main()
                 cout << "NIK tidak ditemukan" << endl;
             }else{
                 if(cek_kesesuaian_nik_dan_tglLhr(auth_nik, auth_tgl)){
-                    cin.ignore();
                     buat_pass(id);
                 }else{
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
@@ -211,14 +204,14 @@ void identitas(){
     (user[id_sedang_login].status == 'Y') ? cout << "Kawin\n" : cout << "Belum Kawin\n";
 };
 
-void ubah_format_tglLhr(string *tglLahir){
+void ubah_format_tglLhr(string tgl_lhr_asli, string *tgl_lhr){
     // dd-mm-yyyy
     // 0123456789
     string x, y, z;
     int yInt;
 
-    x = tglLahir->substr(0, 2);          // tanggal
-    yInt = stoi(tglLahir->substr(3, 2)); // bulan
+    x = tgl_lhr_asli.substr(0, 2);          // tanggal
+    yInt = stoi(tgl_lhr_asli.substr(3, 2)); // bulan
 
     if (yInt == 1) y = "Januari";
     else if (yInt == 2) y = "Februari";
@@ -234,34 +227,41 @@ void ubah_format_tglLhr(string *tglLahir){
     else if (yInt == 12) y = "Desember";
     else y = "Bulan Tidak Valid";
 
-    z = tglLahir->substr(6, 4); // tahun
-    *tglLahir = x + ' ' + y + ' ' + z;
+    z = tgl_lhr_asli.substr(6, 4); // tahun
+    *tgl_lhr = x + ' ' + y + ' ' + z;
 };
 
 void buat_pass(int id){
-    cin.ignore();
-    string pass_baru;
+    string pass_baru, konfir_pass;
     int pjg_char;
     bool kondisi_pass = 0;
     do{
         cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka\n5. Mengandung minimal 1 Simbol" << endl << endl;
         cout << "Password Baru: ";
+        cin.ignore();
         getline(cin, pass_baru);
-        pjg_char = pass_baru.length();
-        kondisi_pass = cek_ketentuan_pass(pass_baru, pjg_char);
-        if(kondisi_pass == true){
-            user[id].pass = pass_baru;
-            cout << endl << "Registrasi Berhasil." << endl;
+        cout << "Konfirmasi Password Baru: ";
+        getline(cin, konfir_pass);
+        if (pass_baru != konfir_pass)
+        {
+            cout << "Konfirmasi Password tidak sesuai.";
         }else{
-            cout << endl << "Password tidak sesuai ketentuan." << endl;
-            cout << "Silahkan Buat Ulang Password." << endl;
-            pause();
-            cls();
+            pjg_char = pass_baru.length();
+            kondisi_pass = cek_ketentuan_pass(pass_baru, pjg_char);
+            if(kondisi_pass == true){
+                user[id].pass = pass_baru;
+                cout << endl << "Registrasi Berhasil." << endl;
+            }else{
+                cout << endl << "Password tidak sesuai ketentuan." << endl;
+                cout << "Silahkan Buat Ulang Password." << endl;
+            }
         }
+        pause();
+        cls();
     }while(!kondisi_pass);
 };
 
-bool cek_nik_terdaftar(int nik_baru){
+bool cek_nik_sudah_dipakai(int nik_baru){
     bool ans = 1;
     for (int i = 0; i < id_terdaftar; i++)
     {
@@ -300,8 +300,7 @@ bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr){
     {
         return 0;
     }
-    ubah_format_tglLhr(&tgl_lhr);
-    return (tgl_lhr == user[id].tgl_lahir);
+    return (tgl_lhr == user[id].tgl_lahir_asli);
 }
 
 int nik_masuk_id_berapa(int nik){
