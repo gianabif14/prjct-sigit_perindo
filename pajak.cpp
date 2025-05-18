@@ -12,7 +12,42 @@ typedef struct
     string pass;
 } pengguna;
 
+typedef struct
+{
+    /* data untuk pph*/
+} data1;
+
+typedef struct
+{
+    int pemilik;
+    string label;
+    string alamat;
+    string tgl_beli;
+    int luas;
+    char bangunan;
+} data2;
+
+typedef struct
+{
+    int pemilik;
+    string nopol;
+    string tgl_beli;
+    string merk;
+    string tipe;
+    int cc;
+    int thn_perakitan;
+    string no_rangka;
+} data3;
+
 pengguna user[1000];
+data1 data_pph[1000];
+data2 data_pbb[1000];
+data3 data_kendaraan[1000];
+
+int id_terdaftar = 0;
+int id_sedang_login = -1;
+int id_tanah = 0;
+int id_kendaraan = 0;
 
 void print_cantik(string header);
 void ubah_format_tglLhr(string tgl_lhr_asli, string *tgl_lhr);
@@ -24,9 +59,7 @@ void pbb();
 void kendaraan();
 void identitas();
 int nik_masuk_id_berapa(int nik);
-int id_terdaftar=0;
-int id_sedang_login = -1;
-bool cek_nik_sudah_dipakai(int nik_baru);
+bool cek_nik_belum_dipakai(int nik_baru);
 bool cek_ketentuan_pass(string pass_baru, int pjg_char);
 bool cek_berhasil_login_atau_tidak(int nik, string pass);
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
@@ -41,9 +74,7 @@ void pause(){
     cin.get();
 }
 
-int main()
-{
-    
+int main(){
     int pilih_menu, nik_baru, auth_nik, id;
     string pass_baru, auth_pass, auth_pass2, auth_tgl;
     bool menu_awal = 1;
@@ -59,7 +90,7 @@ int main()
             print_cantik("Registrasi Akun");
             cout << "Masukkan NIK: ";
             cin >> nik_baru;
-            if (cek_nik_sudah_dipakai(nik_baru)){
+            if (cek_nik_belum_dipakai(nik_baru)){
                 user[id_terdaftar].nik = nik_baru;
                 cin.ignore();
                 cout << "Nama Lengkap: "; getline(cin, user[id_terdaftar].nama);
@@ -148,7 +179,11 @@ void main_menu(){
     do{
         cls();
         print_cantik("Menu Utama");
-        cout << endl << "1. Bayar pajak Penghasilan\n2. Bayar pajak PBB\n3. Bayar pajak Kendaraan\n4. Identitas Pribadi\n0. Keluar Sistem (Log Out)" << endl;
+        cout << "1. Bayar pajak Penghasilan" << endl;
+        cout << "2. Bayar pajak PBB" << endl;
+        cout << "3. Bayar pajak Kendaraan" << endl;
+        cout << "4. Identitas Pribadi" << endl;
+        cout << "0. Keluar Sistem (Log Out)" << endl;
         cout << "Pilih Menu: ";
         cin >> pilih_menu;
         switch (pilih_menu)
@@ -188,11 +223,179 @@ void pph(){
 };
 
 void pbb(){
-    print_cantik("Menu Pajak Bumi dan Bangunan");
+    int pilih_menu, auth_nik, id_pemilikLama;
+    string auth_alamat;
+    char yakin, yakin_balik;
+    do{
+        print_cantik("Menu Pajak Bumi dan Bangunan");
+        cout << "1. Tambah Sertifikat Tanah" << endl;
+        cout << "2. Balik Nama Pemilik Tanah" << endl;
+        cout << "3. Cek Status Pajak" << endl;
+        cout << "4. Ubah Data Sertifikat" << endl;
+        cout << "5. Bayar Pajak (PBB)" << endl;
+        cout << "0. Keluar" << endl;
+        cout << "Pilih Menu: "; 
+        cin >> pilih_menu;
+        switch (pilih_menu){
+            case 1:
+                // int pemilik;
+                // string label;
+                // string alamat;
+                // string tgl_beli;
+                // int luas;
+                // char bangunan;
+                print_cantik("Tambah Sertifikat Tanah");
+                data_pbb[id_tanah].pemilik = id_sedang_login;
+                cin.ignore();
+                cout << "Label Tanah (cth: Rumah, Sawah): ";
+                getline(cin, data_pbb[id_tanah].label);
+                cout << "Alamat (cth: Jl. Babarsari No.2): ";
+                getline(cin, data_pbb[id_tanah].alamat);
+                cout << "Tanggal Pembelian (dd-mm-yyyy): ";
+                cin >> data_pbb[id_tanah].tgl_beli;
+                cout << "Luas Tanah dlm m^2 (cth: 210): ";
+                cin >> data_pbb[id_tanah].luas;
+                cout << "Dalam Tanah tsb, apakah terdapat bangunan? (Y/N): ";
+                cin >> data_pbb[id_tanah].bangunan;
+                pause();
+                cls();
+                cout << "Data Sertifikat Tanah Berhasil Disimpan." << endl;
+                id_tanah++;
+                break;
+
+            case 2:
+                print_cantik("Balik Nama Pemilik Tanah >> BELUM SELESE <<");
+                cout << "Pada menu ini anda memerlukan identitas berupa: " << endl;
+                cout << "1. NIK Pemilik Tanah Sebelumnya" << endl;
+                cout << "2. Alamat Tanah yang akan dibalik nama" << endl;
+                cout << "Apakah Anda yakin akan melakukan balik nama sertifikat tanah (Y/N): ";
+                cin >> yakin_balik;
+                if (yakin_balik != 'Y' && yakin_balik != 'y')
+                {
+                    cout << "Proses Balik Nama Dibatalkan." << endl;
+                }else{
+                    cls();
+                    print_cantik("Input Data");
+                    cout << "NIK Pemilik Tanah Sebelumnya: ";
+                    cin >> auth_nik;
+                    cout << "Alamat Tanah yang akan dibalik nama: ";
+                    cin >> auth_alamat;
+
+                    id_pemilikLama = nik_masuk_id_berapa(auth_nik);
+                    if (id_pemilikLama != -1 && auth_alamat == data_pbb[id_pemilikLama].alamat)
+                    {
+                        // int pemilik;
+                        // string label;
+                        // string alamat;
+                        // string tgl_beli;
+                        // int luas;
+                        // char bangunan;
+                        cls();
+                        cout << "Data Berhasil ditemukan!" << endl;
+                        cout << "Pemilik: " << user[id_pemilikLama].nama;
+
+                    }else{
+                        cout << "Sertifikat Tanah tidak ditemukan atau data tidak sesuai." << endl; 
+                        cout << "Gagal Melakukan balik nama." << endl;
+                    }
+                }
+                break;
+
+            case 3:
+                print_cantik("Cek Status Pajak");
+                break;
+
+            case 4:
+                print_cantik("Ubah Data Sertifikat");
+                break;
+
+            case 5:
+                print_cantik("Bayar Pajak (PBB)");
+                break;
+
+            case 0:
+                print_cantik("Keluar");
+                cout << "Apakah anda yakin akan keluar dari sistem Pembayaran PBB (Y/N): ";
+                cin >> yakin;
+                break;
+            
+            default:
+                print_cantik("Menu Tidak Valid.");
+                break;
+            }
+            if (pilih_menu != 0) pause();
+    }while(yakin != 'Y' && yakin != 'y');
 };
 
 void kendaraan(){
-    print_cantik("Menu Pajak Kendaraan");
+    int pilih_menu;
+    char yakin;
+    do{
+        print_cantik("Menu Pajak Kendaraan");
+        cout << "1. Tambah Kendaraan" << endl;
+        cout << "2. Balik Nama Pemilik Kendaraan" << endl;
+        cout << "3. Cek Status Pajak" << endl;
+        cout << "4. Bayar Pajak (Kendaraan)" << endl;
+        cout << "0. Keluar" << endl;
+        cout << "Pilih Menu: "; 
+        cin >> pilih_menu;
+        switch (pilih_menu){
+            case 1:
+                // int pemilik;
+                // string nopol;
+                // string tgl_beli;
+                // string merk;
+                // string tipe;
+                // int cc;
+                // int thn_perakitan;
+                // string no_rangka;
+                print_cantik("Tambah Kendaraan");
+                data_kendaraan[id_kendaraan].pemilik = id_sedang_login;
+                cin.ignore();
+                cout << "No. Polisi (cth: AB 1234 XX): ";
+                getline(cin, data_kendaraan[id_kendaraan].nopol);
+                cout << "Tanggal Pembelian (dd-mm-yyyy): ";
+                cin >> data_kendaraan[id_kendaraan].tgl_beli;
+                cout << "Merk (cth: Honda): ";
+                getline(cin, data_kendaraan[id_kendaraan].merk);
+                cout << "Tipe (cth: Beat): ";
+                getline(cin, data_kendaraan[id_kendaraan].tipe);
+                cout << "Isi Silinder dlm CC (cth: 150): ";
+                cin >> data_kendaraan[id_kendaraan].cc;
+                cout << "Tahun Perakitan (cth: 2020): ";
+                cin >> data_kendaraan[id_kendaraan].thn_perakitan;
+                cout << "Nomor Rangka (cth: MH1234567890): ";
+                cin >> data_kendaraan[id_kendaraan].no_rangka;
+                pause();
+                cls();
+                cout << "Data Kendaraan Berhasil Disimpan." << endl;
+                id_kendaraan++;
+                break;
+
+            case 2:
+                print_cantik("Balik Nama Pemilik Kendaraan");
+                break;
+
+            case 3:
+                print_cantik("Cek Status Pajak");
+                break;
+
+            case 4:
+                print_cantik("Bayar Pajak Kendaraan");
+                break;
+
+            case 0:
+                print_cantik("Keluar");
+                cout << "Apakah anda yakin akan keluar dari sistem Pembayaran Pajak Kendaraan (Y/N): ";
+                cin >> yakin;
+                break;
+            
+            default:
+                print_cantik("Menu Tidak Valid.");
+                break;
+            }
+            if (pilih_menu != 0) pause();
+    }while(yakin != 'Y' && yakin != 'y');
 };
 
 void identitas(){
@@ -238,7 +441,6 @@ void buat_pass(int id){
     do{
         cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka\n5. Mengandung minimal 1 Simbol" << endl << endl;
         cout << "Password Baru: ";
-        cin.ignore();
         getline(cin, pass_baru);
         cout << "Konfirmasi Password Baru: ";
         getline(cin, konfir_pass);
@@ -256,12 +458,10 @@ void buat_pass(int id){
                 cout << "Silahkan Buat Ulang Password." << endl;
             }
         }
-        pause();
-        cls();
     }while(!kondisi_pass);
 };
 
-bool cek_nik_sudah_dipakai(int nik_baru){
+bool cek_nik_belum_dipakai(int nik_baru){
     bool ans = 1;
     for (int i = 0; i < id_terdaftar; i++)
     {
