@@ -292,7 +292,7 @@ void pbb(){
                     (data_pbb[id_tanah_dipilih].bangunan == 'Y') ? cout << "Ada Bangunan" << endl : cout << "Tidak Ada Bangunan" << endl;
                     cout << "-------------------------------------" << endl;
 
-                    int pajak = data_pbb[id_tanah_dipilih].luas * 1000; // pajak tanah Rp. 1000 per m^2
+                    int pajak;
                     int pajak_bangunan = 0;
                     int denda = 0;
                     int idx_sudah_pernahBayar = -1;
@@ -306,6 +306,11 @@ void pbb(){
                     }
                     if (idx_sudah_pernahBayar != -1)
                     {
+                        pajak = data_pbb[idx_sudah_pernahBayar].luas * 1000; // pajak tanah Rp. 1000 per m^2
+                        if (data_pbb[idx_sudah_pernahBayar].bangunan == 'Y')
+                        {
+                            pajak_bangunan = data_pbb[idx_sudah_pernahBayar].luas * 500; // pajak bangunan Rp. 500 per m^2
+                        }
                         if (cek_selisih_tanggal(data_pajak_pbb[idx_sudah_pernahBayar].tgl_bayar, tanggal_bayar) > 30)
                         {
                             denda = (pajak + pajak_bangunan) * 0.1; // denda 10% dari total pajak
@@ -314,6 +319,11 @@ void pbb(){
                         }
                         
                     }else{
+                        pajak = data_pbb[id_tanah_dipilih].luas * 1000; // pajak tanah Rp. 1000 per m^2
+                        if (data_pbb[id_tanah_dipilih].bangunan == 'Y')
+                        {
+                            pajak_bangunan = data_pbb[id_tanah_dipilih].luas * 500; // pajak bangunan Rp. 500 per m^2
+                        }
                         if (cek_selisih_tanggal(data_pbb[id_tanah_dipilih].tgl_beli, tanggal_bayar) > 30)
                         {
                             denda = (pajak + pajak_bangunan) * 0.1; // denda 10% dari total pajak
