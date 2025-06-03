@@ -234,7 +234,7 @@ void pbb(){
     int pilih_menu, auth_nik, id_pemilikLama, id_tanah_dicari, id_tanah_dipilih;
     int id_tanah_dimiliki[1000], banyak_tanah = 0, pilih_data_diubah, banyak_data_pbb = 0;
     string auth_alamat;
-    char yakin, yakin_balik, status;
+    char yakin1, yakin_balik, status;
     bool ketemu;
     do{
         ofstream tulis("data_pbb.txt", ios::app);
@@ -514,7 +514,7 @@ void pbb(){
             case 0:
                 print_cantik("Keluar");
                 cout << "Apakah anda yakin akan keluar dari sistem Pembayaran PBB (Y/N): ";
-                cin >> yakin;
+                cin >> yakin1;
                 break;
             
             default:
@@ -523,7 +523,7 @@ void pbb(){
             }
             tulis.close();
             if (pilih_menu != 0) system("pause");
-    }while(yakin != 'Y' && yakin != 'y');
+    }while(yakin1 != 'Y' && yakin1 != 'y');
 };
 
 int baca_data_pbb(){
@@ -609,7 +609,7 @@ int kendaraan_id_berapa(string no_pol){
 void kendaraan(){
     int pilih_menu, id_pemilikLama, auth_nik, id_kendaraan_dicari, banyak_data_pajakKendaraan = 0;
     int banyak_kendaraan = 0, id_kendaraan_dimiliki[1000], id_kendaraan_dipilih;
-    char yakin, yakin_balik;
+    char yakin2, yakin_balik;
     bool ketemu;
     string auth_nopol, auth_noRangka;
     do{
@@ -839,7 +839,7 @@ void kendaraan(){
             case 0:
                 print_cantik("Keluar");
                 cout << "Apakah anda yakin akan keluar dari sistem Pembayaran Pajak Kendaraan (Y/N): ";
-                cin >> yakin;
+                cin >> yakin2;
                 break;
             
             default:
@@ -848,7 +848,7 @@ void kendaraan(){
             }
             tulis.close();
             if (pilih_menu != 0) system("pause");
-    }while(yakin != 'Y' && yakin != 'y');
+    }while(yakin2 != 'Y' && yakin2 != 'y');
 };
 
 void identitas(){
