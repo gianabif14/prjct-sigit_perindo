@@ -76,6 +76,8 @@ void main_menu();
 void pbb();
 void kendaraan();
 void identitas();
+void laporan_pbb();
+void laporan_kendaraan();
 int baca_data_pbb();
 int baca_data_pajak_kendaraan();
 int hitung_denda(int pajak, int selisih_hari);
@@ -87,8 +89,18 @@ bool cek_nik_belum_dipakai(int nik_baru);
 bool cek_ketentuan_pass(string pass_baru, int pjg_char);
 bool cek_berhasil_login_atau_tidak(int nik, string pass);
 bool cek_kesesuaian_nik_dan_tglLhr(int nik, string tgl_lhr);
+void simpan_sertifikat_tanah();
+void baca_sertifikat_tanah();
+void simpan_data_kendaraan();
+void baca_data_kendaraan();
+void simpan_data_user();
+void baca_data_user();
 
 int main(){
+    baca_data_user(); // baca user dari file
+    baca_sertifikat_tanah();
+    baca_data_kendaraan();
+
     int pilih_menu, nik_baru, auth_nik, id;
     string pass_baru, auth_pass, auth_pass2, auth_tgl;
     bool menu_awal = 1;
@@ -117,6 +129,7 @@ int main(){
                 system("cls");
                 buat_pass(id_terdaftar);
                 id_terdaftar++;
+                simpan_data_user();
             } else{
                 cout << "NIK Sudah Terdaftar" << endl;
             }
@@ -173,6 +186,223 @@ int main(){
         }
     } while(menu_awal);
     kata_kata();
+}
+
+void simpan_sertifikat_tanah() {
+    ofstream tulis("data_sertifikat_tanah.txt");
+    for (int i = 0; i < id_tanah; i++) {
+        tulis << data_pbb[i].pemilik << '|'
+              << data_pbb[i].label << '|'
+              << data_pbb[i].alamat << '|'
+              << data_pbb[i].tgl_beli << '|'
+              << data_pbb[i].luas << '|'
+              << data_pbb[i].bangunan << endl;
+    }
+    tulis.close();
+}
+
+void baca_sertifikat_tanah() {
+    ifstream baca("data_sertifikat_tanah.txt");
+    string line, pemilik, label, alamat, tgl_beli, luas, bangunan;
+    id_tanah = 0;
+    while (getline(baca, line) && id_tanah < 1000) {
+        stringstream ss(line);
+        getline(ss, pemilik, '|');
+        getline(ss, label, '|');
+        getline(ss, alamat, '|');
+        getline(ss, tgl_beli, '|');
+        getline(ss, luas, '|');
+        getline(ss, bangunan);
+        data_pbb[id_tanah].pemilik = stoi(pemilik);
+        data_pbb[id_tanah].label = label;
+        data_pbb[id_tanah].alamat = alamat;
+        data_pbb[id_tanah].tgl_beli = tgl_beli;
+        data_pbb[id_tanah].luas = stoi(luas);
+        data_pbb[id_tanah].bangunan = bangunan[0];
+        id_tanah++;
+    }
+    baca.close();
+}
+
+void simpan_data_kendaraan() {
+    ofstream tulis("data_kendaraan.txt");
+    for (int i = 0; i < id_kendaraan; i++) {
+        tulis << data_kendaraan[i].pemilik << '|'
+              << data_kendaraan[i].nopol << '|'
+              << data_kendaraan[i].tgl_beli << '|'
+              << data_kendaraan[i].merk << '|'
+              << data_kendaraan[i].tipe << '|'
+              << data_kendaraan[i].cc << '|'
+              << data_kendaraan[i].thn_perakitan << '|'
+              << data_kendaraan[i].no_rangka << endl;
+    }
+    tulis.close();
+}
+
+void baca_data_kendaraan() {
+    ifstream baca("data_kendaraan.txt");
+    string line, pemilik, nopol, tgl_beli, merk, tipe, cc, thn_perakitan, no_rangka;
+    id_kendaraan = 0;
+    while (getline(baca, line) && id_kendaraan < 1000) {
+        stringstream ss(line);
+        getline(ss, pemilik, '|');
+        getline(ss, nopol, '|');
+        getline(ss, tgl_beli, '|');
+        getline(ss, merk, '|');
+        getline(ss, tipe, '|');
+        getline(ss, cc, '|');
+        getline(ss, thn_perakitan, '|');
+        getline(ss, no_rangka);
+        data_kendaraan[id_kendaraan].pemilik = stoi(pemilik);
+        data_kendaraan[id_kendaraan].nopol = nopol;
+        data_kendaraan[id_kendaraan].tgl_beli = tgl_beli;
+        data_kendaraan[id_kendaraan].merk = merk;
+        data_kendaraan[id_kendaraan].tipe = tipe;
+        data_kendaraan[id_kendaraan].cc = stoi(cc);
+        data_kendaraan[id_kendaraan].thn_perakitan = stoi(thn_perakitan);
+        data_kendaraan[id_kendaraan].no_rangka = no_rangka;
+        id_kendaraan++;
+    }
+    baca.close();
+}
+
+int baca_data_pbb() {
+    ifstream baca("data_pbb.txt");
+    string line, pemilik, id_tanah, tgl_bayar, pajak_tanah, pajak_bangunan, denda;
+    int banyak_data = 0;
+    while (getline(baca, line) && banyak_data < 1000) {
+        stringstream ss(line);
+        getline(ss, pemilik, '|');
+        getline(ss, id_tanah, '|');
+        getline(ss, tgl_bayar, '|');
+        getline(ss, pajak_tanah, '|');
+        getline(ss, pajak_bangunan, '|');
+        getline(ss, denda);
+        data_pajak_pbb[banyak_data].pemilik = stoi(pemilik);
+        data_pajak_pbb[banyak_data].id_tanah = stoi(id_tanah);
+        data_pajak_pbb[banyak_data].tgl_bayar = tgl_bayar;
+        data_pajak_pbb[banyak_data].pajak_tanah = stoi(pajak_tanah);
+        data_pajak_pbb[banyak_data].pajak_bangunan = stoi(pajak_bangunan);
+        data_pajak_pbb[banyak_data].denda = stoi(denda);
+        banyak_data++;
+    }
+    baca.close();
+    return banyak_data;
+}
+
+int baca_data_pajak_kendaraan() {
+    ifstream baca("data_pajak_kendaraan.txt");
+    string line, pemilik, id_kendaraan, nopol, tgl_bayar, pajak_kendaraan, denda;
+    int banyak_data = 0;
+    while (getline(baca, line) && banyak_data < 1000) {
+        stringstream ss(line);
+        getline(ss, pemilik, '|');
+        getline(ss, id_kendaraan, '|');
+        getline(ss, nopol, '|');
+        getline(ss, tgl_bayar, '|');
+        getline(ss, pajak_kendaraan, '|');
+        getline(ss, denda);
+        data_pajak_kendaraan[banyak_data].pemilik = stoi(pemilik);
+        data_pajak_kendaraan[banyak_data].id_kendaraan = stoi(id_kendaraan);
+        data_pajak_kendaraan[banyak_data].nopol = nopol;
+        data_pajak_kendaraan[banyak_data].tgl_bayar = tgl_bayar;
+        data_pajak_kendaraan[banyak_data].pajak_kendaraan = stoi(pajak_kendaraan);
+        data_pajak_kendaraan[banyak_data].denda = stoi(denda);
+        banyak_data++;
+    }
+    baca.close();
+    return banyak_data;
+}
+
+void laporan_pbb(){
+    ofstream tulis("laporan_pajak_pbb.txt", ios::trunc);
+    data3 temp;
+    int banyak_data = baca_data_pbb();
+    bool swapped;
+    if (banyak_data == 0) {
+        cout << "Tidak ada data pajak PBB yang tersedia." << endl;
+        return;
+    }
+    for (int i = 0; i < banyak_data - 1; i++)
+    {
+        swapped = false;
+        for (int j = 0; j < banyak_data - 1 - i; j++)
+        {
+            int total_pajak_j = data_pajak_pbb[j].pajak_tanah + data_pajak_pbb[j].pajak_bangunan + data_pajak_pbb[j].denda;
+            int total_pajak_j1 = data_pajak_pbb[j + 1].pajak_tanah + data_pajak_pbb[j + 1].pajak_bangunan + data_pajak_pbb[j + 1].denda;
+            if (total_pajak_j < total_pajak_j1)
+            {
+                temp = data_pajak_pbb[j];
+                data_pajak_pbb[j] = data_pajak_pbb[j + 1];
+                data_pajak_pbb[j + 1] = temp;
+                swapped = true;
+            }  
+        }
+        if (!swapped) break;
+    }
+    tulis << "Laporan Pajak PBB (Urut Berdasarkan Besaran Biaya Pajak)\n";
+    tulis << "--------------------------------------------------------\n";
+    for (int i = 0; i < banyak_data; i++)
+    {
+        if(data_pajak_pbb[i].pemilik == id_sedang_login || id_sedang_login == -1) {
+            tulis << "ID Tanah: " << data_pajak_pbb[i].id_tanah << endl;
+            tulis << "Label Tanah: " << data_pbb[data_pajak_pbb[i].id_tanah].label << endl;
+            tulis << "Tanggal Bayar: " << data_pajak_pbb[i].tgl_bayar << endl;
+            tulis << "Pajak Tanah: Rp. " << data_pajak_pbb[i].pajak_tanah << endl;
+            tulis << "Pajak Bangunan: Rp. " << data_pajak_pbb[i].pajak_bangunan << endl;
+            tulis << "Denda: Rp. " << data_pajak_pbb[i].denda << endl;
+            tulis << "Total Pajak: Rp. " << (data_pajak_pbb[i].pajak_tanah + data_pajak_pbb[i].pajak_bangunan + data_pajak_pbb[i].denda) << endl;
+            tulis << "--------------------------------------------------------\n";
+        }
+    }
+    tulis << "Laporan Selesai.\n";
+    cout << "Laporan Pajak PBB telah disimpan ke file 'laporan_pajak_pbb.txt'." << endl;
+    tulis.close();
+}
+
+void laporan_kendaraan(){
+    ofstream tulis("laporan_pajak_kendaraan.txt", ios::trunc);
+    int banyak_data = baca_data_pajak_kendaraan();
+    data4 temp;
+    bool swapped;
+    if (banyak_data == 0) {
+        cout << "Tidak ada data pajak kendaraan yang tersedia." << endl;
+        return;
+    }
+    for (int i = 0; i < banyak_data - 1; i++)
+    {
+        swapped = false;
+        for (int j = 0; j < banyak_data - 1 - i; j++)
+        {
+            int total_pajak_j = data_pajak_kendaraan[j].pajak_kendaraan + data_pajak_kendaraan[j].denda;
+            int total_pajak_j1 = data_pajak_kendaraan[j + 1].pajak_kendaraan + data_pajak_kendaraan[j + 1].denda;
+            if (total_pajak_j < total_pajak_j1)
+            {
+                temp = data_pajak_kendaraan[j];
+                data_pajak_kendaraan[j] = data_pajak_kendaraan[j + 1];
+                data_pajak_kendaraan[j + 1] = temp;
+                swapped = true;
+            }  
+        }
+        if (!swapped) break;
+    }
+    tulis << "Laporan Pajak Kendaraan (Urut Berdasarkan Besaran Biaya Pajak)\n";
+    tulis << "--------------------------------------------------------\n";
+    for (int i = 0; i < banyak_data; i++)
+    {
+        if( data_pajak_kendaraan[i].pemilik == id_sedang_login || id_sedang_login == -1) {
+            tulis << "ID Kendaraan: " << data_pajak_kendaraan[i].id_kendaraan << endl;
+            tulis << "No. Polisi: " << data_pajak_kendaraan[i].nopol << endl;
+            tulis << "Tanggal Bayar: " << data_pajak_kendaraan[i].tgl_bayar << endl;
+            tulis << "Pajak Kendaraan: Rp. " << data_pajak_kendaraan[i].pajak_kendaraan << endl;
+            tulis << "Denda: Rp. " << data_pajak_kendaraan[i].denda << endl;
+            tulis << "Total Pajak: Rp. " << (data_pajak_kendaraan[i].pajak_kendaraan + data_pajak_kendaraan[i].denda) << endl;
+            tulis << "--------------------------------------------------------\n";
+        }
+    }
+    tulis << "Laporan Selesai.\n";
+    cout << "Laporan Pajak Kendaraan telah disimpan ke file 'laporan_pajak_kendaraan.txt'." << endl;
+    tulis.close();
 }
 
 void print_cantik(string header){
@@ -244,6 +474,7 @@ void pbb(){
         cout << "3. Balik Nama Pemilik Tanah" << endl;
         cout << "4. Cek Status Pajak" << endl;
         cout << "5. Ubah Data Sertifikat" << endl;
+        cout << "6. Unduh Laporan Pajak" << endl;
         cout << "0. Keluar" << endl;
         cout << "Pilih Menu: "; 
         cin >> pilih_menu;
@@ -266,6 +497,7 @@ void pbb(){
                 system("cls");
                 cout << "Data Sertifikat Tanah Berhasil Disimpan." << endl;
                 id_tanah++;
+                simpan_sertifikat_tanah();
                 break;
 
             case 2:
@@ -509,6 +741,16 @@ void pbb(){
                         cout << "Pilihan tidak valid." << endl;
                     }
                 }
+                simpan_sertifikat_tanah();
+                break;
+
+            case 6:
+                print_cantik("Unduh Laporan Pajak");
+                cout << "Laporan Pajak PBB akan diunduh ke file 'laporan_pajak_pbb.txt'." << endl;
+                system("pause");
+                system("cls");
+                laporan_pbb();
+                cout << "Laporan Pajak PBB berhasil diunduh." << endl;
                 break;
 
             case 0:
@@ -526,86 +768,6 @@ void pbb(){
     }while(yakin1 != 'Y' && yakin1 != 'y');
 };
 
-int baca_data_pbb(){
-    int banyak_data_pbb = 0;
-    string line;
-    string pemilik, id_tanah, tgl_bayar, pajak_tanah, pajak_bangunan, denda;
-    ifstream baca("data_pbb.txt");
-    while(getline(baca, line) && banyak_data_pbb < 1000) {
-        stringstream ss(line);
-        // format data: pemilik|id_tanah|tgl_bayar|pajak_tanah|pajak_bangunan|denda
-        getline(ss, pemilik, '|');
-        getline(ss, id_tanah, '|');
-        getline(ss, tgl_bayar, '|');
-        getline(ss, pajak_tanah, '|');
-        getline(ss, pajak_bangunan, '|');
-        getline(ss, denda);
-
-        data_pajak_pbb[banyak_data_pbb].pemilik = stoi(pemilik);
-        data_pajak_pbb[banyak_data_pbb].id_tanah = stoi(id_tanah);
-        data_pajak_pbb[banyak_data_pbb].tgl_bayar = tgl_bayar;
-        data_pajak_pbb[banyak_data_pbb].pajak_tanah = stoi(pajak_tanah);
-        data_pajak_pbb[banyak_data_pbb].pajak_bangunan = stoi(pajak_bangunan);
-        data_pajak_pbb[banyak_data_pbb].denda = stoi(denda);
-
-        banyak_data_pbb++;
-    }
-    
-    baca.close();
-    return banyak_data_pbb;
-};
-
-int baca_data_pajak_kendaraan(){
-    int banyak_data_kendaraan = 0;
-    string line;
-    string pemilik, id_kendaraan, nopol, tgl_bayar, pajak_kendaraan, denda;
-    ifstream baca("data_pajak_kendaraan.txt");
-    while(getline(baca, line) && banyak_data_kendaraan < 1000) {
-        stringstream ss(line);
-        // format data: pemilik|id_kendaraan|nopol|tgl_bayar|pajak_kendaraan|denda
-        getline(ss, pemilik, '|');
-        getline(ss, id_kendaraan, '|');
-        getline(ss, nopol, '|');
-        getline(ss, tgl_bayar, '|');
-        getline(ss, pajak_kendaraan, '|');
-        getline(ss, denda);
-
-        data_pajak_kendaraan[banyak_data_kendaraan].pemilik = stoi(pemilik);
-        data_pajak_kendaraan[banyak_data_kendaraan].id_kendaraan = stoi(id_kendaraan);
-        data_pajak_kendaraan[banyak_data_kendaraan].nopol = nopol;
-        data_pajak_kendaraan[banyak_data_kendaraan].tgl_bayar = tgl_bayar;
-        data_pajak_kendaraan[banyak_data_kendaraan].pajak_kendaraan = stoi(pajak_kendaraan);
-        data_pajak_kendaraan[banyak_data_kendaraan].denda = stoi(denda);
-
-        banyak_data_kendaraan++;
-    }
-    
-    baca.close();
-    return banyak_data_kendaraan;
-};
-
-int tanah_id_berapa(string alamat){
-    for (int i = 0; i < id_tanah; i++)
-    {
-        if (alamat == data_pbb[i].alamat)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-int kendaraan_id_berapa(string no_pol){
-    for (int i = 0; i < id_kendaraan; i++)
-    {
-        if (no_pol == data_kendaraan[i].nopol)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
 void kendaraan(){
     int pilih_menu, id_pemilikLama, auth_nik, id_kendaraan_dicari, banyak_data_pajakKendaraan = 0;
     int banyak_kendaraan = 0, id_kendaraan_dimiliki[1000], id_kendaraan_dipilih;
@@ -619,6 +781,7 @@ void kendaraan(){
         cout << "2. Bayar Pajak (Kendaraan)" << endl;
         cout << "3. Balik Nama Pemilik Kendaraan" << endl;
         cout << "4. Cek Status Pajak" << endl;
+        cout << "5. Unduh Laporan Pajak" << endl;
         cout << "0. Keluar" << endl;
         cout << "Pilih Menu: "; 
         cin >> pilih_menu;
@@ -631,6 +794,7 @@ void kendaraan(){
                 getline(cin, data_kendaraan[id_kendaraan].nopol);
                 cout << "Tanggal Pembelian (dd-mm-yyyy): ";
                 cin >> data_kendaraan[id_kendaraan].tgl_beli;
+                cin.ignore();
                 cout << "Merk (cth: Honda): ";
                 getline(cin, data_kendaraan[id_kendaraan].merk);
                 cout << "Tipe (cth: Beat): ";
@@ -639,12 +803,14 @@ void kendaraan(){
                 cin >> data_kendaraan[id_kendaraan].cc;
                 cout << "Tahun Perakitan (cth: 2020): ";
                 cin >> data_kendaraan[id_kendaraan].thn_perakitan;
+                cin.ignore();
                 cout << "Nomor Rangka (cth: MH1234567890): ";
-                cin >> data_kendaraan[id_kendaraan].no_rangka;
+                getline(cin, data_kendaraan[id_kendaraan].no_rangka);
                 system("pause");
                 system("cls");
                 cout << "Data Kendaraan Berhasil Disimpan." << endl;
                 id_kendaraan++;
+                simpan_data_kendaraan();
                 break;
 
             case 2:
@@ -796,6 +962,7 @@ void kendaraan(){
                         cout << "Gagal Melakukan balik nama." << endl;
                     }
                 }
+                simpan_data_kendaraan();
                 break;
 
             case 4:
@@ -836,6 +1003,15 @@ void kendaraan(){
                 }
                 break;
 
+            case 5:
+                print_cantik("Unduh Laporan Pajak");
+                cout << "Laporan Pajak Kendaraan akan diunduh ke file 'laporan_pajak_kendaraan.txt'." << endl;
+                system("pause");
+                system("cls");
+                laporan_kendaraan();
+                cout << "Laporan Pajak Kendaraan berhasil diunduh." << endl;
+                break;
+
             case 0:
                 print_cantik("Keluar");
                 cout << "Apakah anda yakin akan keluar dari sistem Pembayaran Pajak Kendaraan (Y/N): ";
@@ -859,6 +1035,45 @@ void identitas(){
     cout << "Status Perkawinan: ";
     (user[id_sedang_login].status == 'Y') ? cout << "Kawin\n" : cout << "Belum Kawin\n";
 };
+
+void simpan_data_user() {
+    ofstream tulis("data_user.txt");
+    for (int i = 0; i < id_terdaftar; i++) {
+        tulis << user[i].nik << '|'
+              << user[i].nama << '|'
+              << user[i].tgl_lahir_asli << '|'
+              << user[i].tgl_lahir << '|'
+              << user[i].profesi << '|'
+              << user[i].status << '|'
+              << user[i].pass << endl;
+    }
+    tulis.close();
+}
+
+void baca_data_user() {
+    ifstream baca("data_user.txt");
+    string line, nik, nama, tgl_lahir_asli, tgl_lahir, profesi, status, pass;
+    id_terdaftar = 0;
+    while (getline(baca, line) && id_terdaftar < 1000) {
+        stringstream ss(line);
+        getline(ss, nik, '|');
+        getline(ss, nama, '|');
+        getline(ss, tgl_lahir_asli, '|');
+        getline(ss, tgl_lahir, '|');
+        getline(ss, profesi, '|');
+        getline(ss, status, '|');
+        getline(ss, pass);
+        user[id_terdaftar].nik = stoi(nik);
+        user[id_terdaftar].nama = nama;
+        user[id_terdaftar].tgl_lahir_asli = tgl_lahir_asli;
+        user[id_terdaftar].tgl_lahir = tgl_lahir;
+        user[id_terdaftar].profesi = profesi;
+        user[id_terdaftar].status = status[0];
+        user[id_terdaftar].pass = pass;
+        id_terdaftar++;
+    }
+    baca.close();
+}
 
 int hitung_denda(int pajak, int selisih_hari){
     if(selisih_hari == 0){
@@ -987,6 +1202,28 @@ int nik_masuk_id_berapa(int nik){
     } 
     return ans;
 };
+
+int tanah_id_berapa(string alamat){
+    for (int i = 0; i < id_tanah; i++)
+    {
+        if (alamat == data_pbb[i].alamat)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int kendaraan_id_berapa(string no_pol){
+    for (int i = 0; i < id_kendaraan; i++)
+    {
+        if (no_pol == data_kendaraan[i].nopol)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
 
 void kata_kata(){
     system("cls");
