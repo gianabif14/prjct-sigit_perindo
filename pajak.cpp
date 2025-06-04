@@ -525,7 +525,17 @@ void pbb(){
                     }
                     cout << endl << "Pilih ID Tanah (tanpa petik dua (\" \")): ";
                     cin >> id_tanah_dipilih;
-                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah) {
+                    bool ketemu = 0;
+                    for (int i = 0; i < banyak_tanah; i++)
+                    {
+                        if (id_tanah_dipilih == id_tanah_dimiliki[i])
+                        {
+                            ketemu = 1;
+                            break;
+                        }
+                    }
+                    
+                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah || ketemu == 0) {
                         cout << "ID Tanah tidak valid." << endl;
                         break;
                     }
@@ -679,7 +689,16 @@ void pbb(){
                     }
                     cout << endl << "Pilih ID Tanah (tanpa petik dua (\" \")): ";
                     cin >> id_tanah_dipilih;
-                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah) {
+                    bool ketemu = 0;
+                    for (int i = 0; i < banyak_tanah; i++)
+                    {
+                        if (id_tanah_dipilih == id_tanah_dimiliki[i])
+                        {
+                            ketemu = 1;
+                            break;
+                        }
+                    }
+                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah || ketemu == 0) {
                         cout << "ID Tanah tidak valid." << endl;
                         break;
                     }
@@ -721,7 +740,16 @@ void pbb(){
                     }
                     cout << endl << "Pilih ID Tanah (tanpa petik dua (\" \")): ";
                     cin >> id_tanah_dipilih;
-                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah) {
+                    bool ketemu = 0;
+                    for (int i = 0; i < banyak_tanah; i++)
+                    {
+                        if (id_tanah_dipilih == id_tanah_dimiliki[i])
+                        {
+                            ketemu = 1;
+                            break;
+                        }
+                    }
+                    if (id_tanah_dipilih < 0 || id_tanah_dipilih >= id_tanah || ketemu == 0) {
                         cout << "ID Tanah tidak valid." << endl;
                         break;
                     }
@@ -844,7 +872,16 @@ void kendaraan(){
                     }
                     cout << endl << "Pilih ID Kendaraan (tanpa petik dua (\" \")): ";
                     cin >> id_kendaraan_dipilih;
-                    if (id_kendaraan_dipilih < 0 || id_kendaraan_dipilih >= id_kendaraan) {
+                    bool ketemu = 0;
+                    for (int i = 0; i < banyak_kendaraan; i++)
+                    {
+                        if (id_kendaraan_dipilih == id_kendaraan_dimiliki[i])
+                        {
+                            ketemu = 1;
+                            break;
+                        }
+                    }
+                    if (id_kendaraan_dipilih < 0 || id_kendaraan_dipilih >= id_kendaraan || ketemu == 0) {
                         cout << "ID Kendaraan tidak valid." << endl;
                         break;
                     }
@@ -998,7 +1035,16 @@ void kendaraan(){
                     }
                     cout << endl << "Pilih ID Kendaraan (tanpa petik dua (\" \")): ";
                     cin >> id_kendaraan_dipilih;
-                    if (id_kendaraan_dipilih < 0 || id_kendaraan_dipilih >= id_kendaraan) {
+                    bool ketemu = 0;
+                    for (int i = 0; i < banyak_kendaraan; i++)
+                    {
+                        if (id_kendaraan_dipilih == id_kendaraan_dimiliki[i])
+                        {
+                            ketemu = 1;
+                            break;
+                        }
+                    }
+                    if (id_kendaraan_dipilih < 0 || id_kendaraan_dipilih >= id_kendaraan || ketemu == 0) {
                         cout << "ID Kendaraan tidak valid." << endl;
                         break;
                     }
