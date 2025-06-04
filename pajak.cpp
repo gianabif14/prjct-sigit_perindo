@@ -127,6 +127,7 @@ int main(){
                 cout << "Status Perkawinan (Y/T): "; cin >> user[id_terdaftar].status;
                 system("pause");
                 system("cls");
+                cin.ignore();
                 buat_pass(id_terdaftar);
                 id_terdaftar++;
                 simpan_data_user();
@@ -164,11 +165,13 @@ int main(){
                 cout << "NIK tidak ditemukan" << endl;
             }else{
                 if(cek_kesesuaian_nik_dan_tglLhr(auth_nik, auth_tgl)){
+                    cin.ignore();
                     buat_pass(id);
                 }else{
                     cout << "NIK dan tanggal lahir tidak sesuai" << endl;
                 }
             }
+            simpan_data_user();
             system("pause");
             break;
         
@@ -186,6 +189,7 @@ int main(){
         }
     } while(menu_awal);
     kata_kata();
+    system("pause");
 }
 
 void simpan_sertifikat_tanah() {
@@ -562,44 +566,49 @@ void pbb(){
                     if (idx_sudah_pernahBayar != -1)
                     {
                         selisih_tanggal = cek_selisih_tanggal(data_pajak_pbb[idx_sudah_pernahBayar].tgl_bayar, tanggal_bayar);
-                        if (selisih_tanggal > 30)
+                        if (selisih_tanggal > 395)
                         {
-                            denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 30)); // denda 10% dari total pajak
+                            denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
                             denda = 0; // tidak ada denda jika bayar tepat waktu
                         }
                         
                     }else{
                         selisih_tanggal = cek_selisih_tanggal(data_pbb[id_tanah_dipilih].tgl_beli, tanggal_bayar);
-                        if (selisih_tanggal > 30)
+                        if (selisih_tanggal > 395)
                         {
-                            denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 30)); // denda 10% dari total pajak
+                            denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
                             denda = 0; // tidak ada denda jika bayar tepat waktu
                         }
                     }
                     
                     char yakin_bayar = 'N';
-                    cout << "Pajak Tanah: Rp. " << pajak << endl;
-                    cout << "Pajak Bangunan: Rp. " << pajak_bangunan << endl;
-                    cout << "Denda: " << denda << endl;
-                    cout << "Total Pajak yang harus dibayar: Rp. " << pajak + pajak_bangunan + denda << endl;
-                    cout << "Apakah Anda yakin akan membayar pajak PBB (Y/N): ";
-                    cin >> yakin_bayar;
-                    cin.ignore();
-                    if (yakin_bayar == 'Y' || yakin_bayar == 'y')
-                    {
-                        cout << "Pembayaran Pajak Berhasil." << endl;
-                        cout << "Terimakasih telah membayar pajak PBB." << endl;
+                    if(selisih_tanggal >= 358){
+                        cout << "Pajak Tanah: Rp. " << pajak << endl;
+                        cout << "Pajak Bangunan: Rp. " << pajak_bangunan << endl;
+                        cout << "Denda: " << denda << endl;
+                        cout << "Total Pajak yang harus dibayar: Rp. " << pajak + pajak_bangunan + denda << endl;
+                        cout << "Apakah Anda yakin akan membayar pajak PBB (Y/N): ";
+                        cin >> yakin_bayar;
+                        cin.ignore();
+                        if (yakin_bayar == 'Y' || yakin_bayar == 'y')
+                        {
+                            cout << "Pembayaran Pajak Berhasil." << endl;
+                            cout << "Terimakasih telah membayar pajak PBB." << endl;
 
-                        // simpan data pembayaran ke file
-                        tulis << data_pbb[id_tanah_dipilih].pemilik << '|'; // pemilik
-                        tulis << id_tanah_dipilih << '|'; // id_tanah
-                        tulis << tanggal_bayar << '|'; // tgl_bayar
-                        tulis << pajak << '|'; // pajak_tanah
-                        tulis << pajak_bangunan << '|'; // pajak_bangunan
-                        tulis << denda << endl; // denda
+                            // simpan data pembayaran ke file
+                            tulis << data_pbb[id_tanah_dipilih].pemilik << '|'; // pemilik
+                            tulis << id_tanah_dipilih << '|'; // id_tanah
+                            tulis << tanggal_bayar << '|'; // tgl_bayar
+                            tulis << pajak << '|'; // pajak_tanah
+                            tulis << pajak_bangunan << '|'; // pajak_bangunan
+                            tulis << denda << endl; // denda
+                        }else{
+                            cout << "Pembayaran Pajak Dibatalkan." << endl;
+                        }
                     }else{
+                        cout << "Tanggal pembayaran tidak valid." << endl;
                         cout << "Pembayaran Pajak Dibatalkan." << endl;
                     }
                 }
@@ -640,8 +649,9 @@ void pbb(){
                             cout << "Luas Tanah  : " << data_pbb[id_tanah_dicari].luas << endl;
                             cout << "Status Tanah: ";
                             (data_pbb[id_tanah_dicari].bangunan == 'Y') ? cout << "Ada Bangunan" << endl << endl: cout << "Tidak Ada Bangunan" << endl << endl;
-                            print_cantik("Data berhasil diubah nama.");
+                            cout << "Data berhasil diubah nama." << endl;
                             data_pbb[id_tanah_dicari].pemilik = id_sedang_login;
+                            simpan_sertifikat_tanah();
                         }
                     }
                     if(id_pemilikLama == -1 || ketemu == 0){
@@ -871,44 +881,49 @@ void kendaraan(){
                     if (idx_sudah_pernahBayar != -1)
                     {
                         selisih_tanggal = cek_selisih_tanggal(data_pajak_kendaraan[idx_sudah_pernahBayar].tgl_bayar, tanggal_bayar);
-                        if (selisih_tanggal > 30)
+                        if (selisih_tanggal > 395)
                         {
-                            denda = hitung_denda(pajak, (selisih_tanggal - 30)); // denda 10% dari total pajak
+                            denda = hitung_denda(pajak, (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
                             denda = 0; // tidak ada denda jika bayar tepat waktu
                         }
                         
                     }else{
                         selisih_tanggal = cek_selisih_tanggal(data_kendaraan[id_kendaraan_dipilih].tgl_beli, tanggal_bayar);
-                        if (selisih_tanggal > 30)
+                        if (selisih_tanggal > 395)
                         {
-                            denda = hitung_denda(pajak, (selisih_tanggal - 30)); // denda 10% dari total pajak
+                            denda = hitung_denda(pajak, (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
                             denda = 0; // tidak ada denda jika bayar tepat waktu
                         }
                     }
                     
                     char yakin_bayar = 'N';
-                    cout << "Pajak Kendaraan: Rp. " << pajak << endl;
-                    cout << "Denda: " << denda << endl;
-                    cout << "Total Pajak yang harus dibayar: Rp. " << pajak + denda << endl;
-                    cout << "Apakah Anda yakin akan membayar pajak Kendaraan (Y/N): ";
-                    cin >> yakin_bayar;
-                    cin.ignore();
-                    if (yakin_bayar == 'Y' || yakin_bayar == 'y')
+                    if (selisih_tanggal >= 358)
                     {
-                        cout << "Pembayaran Pajak Berhasil." << endl;
-                        cout << "Terimakasih telah membayar pajak Kendaraan." << endl;
+                        cout << "Pajak Kendaraan: Rp. " << pajak << endl;
+                        cout << "Denda: " << denda << endl;
+                        cout << "Total Pajak yang harus dibayar: Rp. " << pajak + denda << endl;
+                        cout << "Apakah Anda yakin akan membayar pajak Kendaraan (Y/N): ";
+                        cin >> yakin_bayar;
+                        cin.ignore();
+                        if (yakin_bayar == 'Y' || yakin_bayar == 'y')
+                        {
+                            cout << "Pembayaran Pajak Berhasil." << endl;
+                            cout << "Terimakasih telah membayar pajak Kendaraan." << endl;
 
-                        // simpan data pembayaran ke file
-                        tulis << data_kendaraan[id_kendaraan_dipilih].pemilik << '|'; // pemilik
-                        tulis << id_kendaraan_dipilih << '|'; // id_kendaraan
-                        tulis << data_kendaraan[id_kendaraan_dipilih].nopol << '|'; // nopol
-                        tulis << tanggal_bayar << '|'; // tgl_bayar
-                        tulis << pajak << '|'; // pajak_kendaraan
-                        tulis << denda << endl; // denda
-                    }else{
-                        cout << "Pembayaran Pajak Dibatalkan." << endl;
+                            // simpan data pembayaran ke file
+                            tulis << data_kendaraan[id_kendaraan_dipilih].pemilik << '|'; // pemilik
+                            tulis << id_kendaraan_dipilih << '|'; // id_kendaraan
+                            tulis << data_kendaraan[id_kendaraan_dipilih].nopol << '|'; // nopol
+                            tulis << tanggal_bayar << '|'; // tgl_bayar
+                            tulis << pajak << '|'; // pajak_kendaraan
+                            tulis << denda << endl; // denda
+                        }else{
+                            cout << "Pembayaran Pajak Dibatalkan." << endl;
+                        }
+                    } else{
+                        cout << "Anda belum bisa membayar pajak kendaraan, karena belum masuk waktu pembayaran pajak." << endl;
                     }
                 }
                 break;
@@ -952,8 +967,9 @@ void kendaraan(){
                                 cout << "Isi Silinder   : " << data_kendaraan[id_kendaraan_dicari].cc << " CC" << endl;
                                 cout << "Tahun Perakitan: " << data_kendaraan[id_kendaraan_dicari].thn_perakitan << endl;
                                 cout << "No Rangka      : " << data_kendaraan[id_kendaraan_dicari].no_rangka << endl << endl;
-                                print_cantik("Data berhasil diubah nama.");
+                                cout << "Data berhasil diubah nama." << endl;
                                 data_kendaraan[id_kendaraan_dicari].pemilik = id_sedang_login;
+                                simpan_data_kendaraan();
                             }
                         }
                     }
@@ -962,7 +978,7 @@ void kendaraan(){
                         cout << "Gagal Melakukan balik nama." << endl;
                     }
                 }
-                simpan_data_kendaraan();
+                
                 break;
 
             case 4:
@@ -1079,7 +1095,7 @@ int hitung_denda(int pajak, int selisih_hari){
     if(selisih_hari == 0){
         return 0;
     }else{
-        return hitung_denda(pajak, selisih_hari - 1) + (pajak * 0.1); // denda 10% dari total pajak per hari keterlambatan
+        return hitung_denda(pajak, selisih_hari - 1) + (pajak * 0.01); // denda 0.01 dari total pajak per hari keterlambatan
     }
 };
 
