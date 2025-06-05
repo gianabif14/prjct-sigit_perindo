@@ -576,7 +576,7 @@ void pbb(){
                     if (idx_sudah_pernahBayar != -1)
                     {
                         selisih_tanggal = cek_selisih_tanggal(data_pajak_pbb[idx_sudah_pernahBayar].tgl_bayar, tanggal_bayar);
-                        if (selisih_tanggal > 395)
+                        if (selisih_tanggal > 365)
                         {
                             denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
@@ -585,7 +585,7 @@ void pbb(){
                         
                     }else{
                         selisih_tanggal = cek_selisih_tanggal(data_pbb[id_tanah_dipilih].tgl_beli, tanggal_bayar);
-                        if (selisih_tanggal > 395)
+                        if (selisih_tanggal > 365)
                         {
                             denda = hitung_denda((pajak + pajak_bangunan), (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
@@ -597,7 +597,7 @@ void pbb(){
                     if(selisih_tanggal >= 358){
                         cout << "Pajak Tanah: Rp. " << pajak << endl;
                         cout << "Pajak Bangunan: Rp. " << pajak_bangunan << endl;
-                        cout << "Denda: " << denda << endl;
+                        cout << "Denda: Rp. " << denda << endl;
                         cout << "Total Pajak yang harus dibayar: Rp. " << pajak + pajak_bangunan + denda << endl;
                         cout << "Apakah Anda yakin akan membayar pajak PBB (Y/N): ";
                         cin >> yakin_bayar;
@@ -918,7 +918,7 @@ void kendaraan(){
                     if (idx_sudah_pernahBayar != -1)
                     {
                         selisih_tanggal = cek_selisih_tanggal(data_pajak_kendaraan[idx_sudah_pernahBayar].tgl_bayar, tanggal_bayar);
-                        if (selisih_tanggal > 395)
+                        if (selisih_tanggal > 365)
                         {
                             denda = hitung_denda(pajak, (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
@@ -927,7 +927,7 @@ void kendaraan(){
                         
                     }else{
                         selisih_tanggal = cek_selisih_tanggal(data_kendaraan[id_kendaraan_dipilih].tgl_beli, tanggal_bayar);
-                        if (selisih_tanggal > 395)
+                        if (selisih_tanggal > 365)
                         {
                             denda = hitung_denda(pajak, (selisih_tanggal - 365)); // denda 10% dari total pajak
                         }else{
@@ -1020,23 +1020,26 @@ void kendaraan(){
 
             case 4:
                 print_cantik("Cek Status Pajak");
-                banyak_data_pajakKendaraan = baca_data_pajak_kendaraan();
-                if (banyak_data_pajakKendaraan == 0)
+                banyak_kendaraan = baca_data_pajak_kendaraan();
+                if (banyak_kendaraan == 0)
                 {
                     cout << "Anda belum pernah membayar pajak kendaraan." << endl;
                 }else{
                     cout << "List Kendaraan yang anda miliki:" << endl;
-                    for (int i = 0; i < id_kendaraan; i++)
+                    int a = 0;
+                    for (int i = 0; i < banyak_kendaraan; i++)
                     {
                         if (data_kendaraan[i].pemilik == id_sedang_login)
                         {
                             cout << "ID: \"" << i << "\". " << data_kendaraan[i].nopol << " - " << data_kendaraan[i].merk << " " << data_kendaraan[i].tipe << endl;
+                            id_kendaraan_dimiliki[a] = i;
+                            a++;
                         }
                     }
                     cout << endl << "Pilih ID Kendaraan (tanpa petik dua (\" \")): ";
                     cin >> id_kendaraan_dipilih;
                     bool ketemu = 0;
-                    for (int i = 0; i < banyak_kendaraan; i++)
+                    for (int i = 0; i < a; i++)
                     {
                         if (id_kendaraan_dipilih == id_kendaraan_dimiliki[i])
                         {
@@ -1052,7 +1055,7 @@ void kendaraan(){
                     system("cls");
                     cout << "Anda memilih ID Kendaraan: \"" << id_kendaraan_dipilih << "\". " << data_kendaraan[id_kendaraan_dipilih].nopol << endl;
                     cout << "Data Pajak yang telah dibayar:" << endl;
-                    for (int i = 0; i < banyak_data_pajakKendaraan; i++)
+                    for (int i = 0; i < banyak_kendaraan; i++)
                     {
                         if (data_pajak_kendaraan[i].id_kendaraan == id_kendaraan_dipilih && data_pajak_kendaraan[i].pemilik == id_sedang_login)
                         {
@@ -1191,6 +1194,7 @@ void buat_pass(int id){
     int pjg_char;
     bool kondisi_pass = 0;
     do{
+        system("cls");
         cout << "Buatlah password dengan ketentuan:\n1. Minimal panjang 8 Karakter\n2. Mengandung minimal 1 Uppercase\n3. Mengandung minimal 1 Lowercase\n4. Mengandung minimal 1 Angka\n5. Mengandung minimal 1 Simbol" << endl << endl;
         cout << "Password Baru: ";
         getline(cin, pass_baru);
@@ -1198,7 +1202,8 @@ void buat_pass(int id){
         getline(cin, konfir_pass);
         if (pass_baru != konfir_pass)
         {
-            cout << "Konfirmasi Password tidak sesuai.";
+            cout << "Konfirmasi Password tidak sesuai." << endl;
+            system("pause");
         }else{
             pjg_char = pass_baru.length();
             kondisi_pass = cek_ketentuan_pass(pass_baru, pjg_char);
@@ -1208,6 +1213,7 @@ void buat_pass(int id){
             }else{
                 cout << endl << "Password tidak sesuai ketentuan." << endl;
                 cout << "Silahkan Buat Ulang Password." << endl;
+                system("pause");
             }
         }
     }while(!kondisi_pass);
