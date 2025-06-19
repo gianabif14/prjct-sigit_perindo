@@ -1,0 +1,24 @@
+Laporan Pajak Kendaraan (Urut Berdasarkan Besaran Biaya Pajak)
+--------------------------------------------------------
+ID Kendaraan: 0
+No. Polisi: AB 1234 AC
+Tanggal Bayar: 10-10-2030
+Pajak Kendaraan: Rp. 15000
+Denda: Rp. 110850
+Total Pajak: Rp. 125850
+--------------------------------------------------------
+ID Kendaraan: 0
+No. Polisi: AB 1234 AC
+Tanggal Bayar: 01-10-2027
+Pajak Kendaraan: Rp. 15000
+Denda: Rp. 40500
+Total Pajak: Rp. 55500
+--------------------------------------------------------
+ID Kendaraan: 0
+No. Polisi: AB 1234 AC
+Tanggal Bayar: 01-01-2026
+Pajak Kendaraan: Rp. 15000
+Denda: Rp. 0
+Total Pajak: Rp. 15000
+--------------------------------------------------------
+Laporan Selesai.

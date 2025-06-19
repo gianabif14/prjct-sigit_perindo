@@ -1,0 +1,19 @@
+Laporan Pajak PBB (Urut Berdasarkan Besaran Biaya Pajak)
+--------------------------------------------------------
+ID Tanah: 0
+Label Tanah: Rumah
+Tanggal Bayar: 10-01-2026
+Pajak Tanah: Rp. 500000
+Pajak Bangunan: Rp. 250000
+Denda: Rp. 67500
+Total Pajak: Rp. 817500
+--------------------------------------------------------
+ID Tanah: 0
+Label Tanah: Rumah
+Tanggal Bayar: 01-02-2027
+Pajak Tanah: Rp. 500000
+Pajak Bangunan: Rp. 0
+Denda: Rp. 105000
+Total Pajak: Rp. 605000
+--------------------------------------------------------
+Laporan Selesai.
